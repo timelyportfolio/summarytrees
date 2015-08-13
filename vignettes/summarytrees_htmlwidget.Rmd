@@ -1,0 +1,26 @@
+---
+title: "Interactive summarytrees "
+author: "Kent Russell"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Interactive summarytrees}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+**still experimental**
+
+`summarytrees` can transform into an `htmlwidget` quickly and easily.  Here is just a simple example.  Once it is a `htmlwidget`, we can include it in a `rmarkdown` vignette, in `Shiny`, as a standalone web page.
+
+```{r}
+library(summarytrees)
+
+json <- paste0(
+  readLines("http://www2.research.att.com/~kshirley/jsm2015/data.json")
+  ,collapse="\n"
+)
+
+summarytrees_htmlwidget(json, height = 600, width = 800)
+
+```
