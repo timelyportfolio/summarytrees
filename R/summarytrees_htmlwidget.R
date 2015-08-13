@@ -9,7 +9,7 @@
 #' @return An \code{htmlwidget} object.
 #' 
 #' @examples 
-#' library(summarytreesWidget)
+#' library(summarytrees)
 #'
 #' json <- paste0(
 #'   readLines("http://www2.research.att.com/~kshirley/jsm2015/data.json")
@@ -40,7 +40,7 @@ summarytrees_htmlwidget <- function(json.object, width = NULL, height = NULL) {
     x,
     width = width,
     height = height,
-    package = 'summarytreesWidget'
+    package = 'summarytrees'
   )
 }
 

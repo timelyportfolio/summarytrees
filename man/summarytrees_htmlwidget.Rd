@@ -18,7 +18,7 @@ Visualize your summary trees as an interactive \code{d3.js} using
                R contexts, such as RStudio viewer, R console, a web browser, or Shiny.
 }
 \examples{
-library(summarytreesWidget)
+library(summarytrees)
 
 json <- paste0(
   readLines("http://www2.research.att.com/~kshirley/jsm2015/data.json")
