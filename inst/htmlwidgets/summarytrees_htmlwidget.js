@@ -159,31 +159,25 @@ HTMLWidgets.widget({
         .attr("size", "4");
 
     var ktextsubmit = kdiv.append("button")
-        .attr("class", "kbutton")
-        .attr("class", "ksubmit")
+        .attr("class", "kbutton ksubmit")
         .text("Submit");
     
     var decreaseButton = kdiv.append("button")
-        .attr("class", "kbutton")
-        .attr("class", "decrease_k")
-        .text("k--")
+        .attr("class", "kbutton decrease_k")
+        .text("k--");
     
     var decreaseButton = kdiv.append("button")
-        .attr("class", "kbutton")
-        .attr("class", "increase_k")
-        .text("k++")
+        .attr("class", "kbutton increase_k")
+        .text("k++");
         
     var sliderWrapper = kdiv.append("div")
-        .attr("class", "lambdaInput")
-        .attr("class", "slid");
-    
+        .attr("class", "lambdaInput slid");
+
     var sliderDiv = sliderWrapper.append("div")
-        .attr("class", "sliderdiv")
-        .attr("class", "sd");
+        .attr("class", "sliderdiv sd");
     
     var sliderInput = sliderDiv.append("input")
-        .attr("class", "sliderinput")
-        .attr("class", "sliderButton")
+        .attr("class", "sliderinput sliderButton")
         .attr("type", "range");
         
     var svg_width = el.getBoundingClientRect().width;
@@ -191,6 +185,7 @@ HTMLWidgets.widget({
 
     // Set up the plotting region for the legend + tree:
     var vis = d3.select(el).append("svg")
+        .attr("class", "svgplot")
         .style("width", "100%")
         .style("height", svg_height - topdiv[0][0].getBoundingClientRect().height )
         .attr("viewBox", '0,-50,' + svg_width + ',' + svg_height )
@@ -285,10 +280,10 @@ HTMLWidgets.widget({
     
     
       // data-dependent values associated with the slider input:
-      sliderInput.min = 1;
-      sliderInput.max = max_k;
-      sliderInput.step = 1;
-      sliderInput.value = current_k;
+      sliderInput[0][0].min = 1;
+      sliderInput[0][0].max = max_k;
+      sliderInput[0][0].step = 1;
+      sliderInput[0][0].value = current_k;
     
       // Create the svg to contain the slider scale:
       var scaleContainer = d3.select(el).select(".sliderdiv").append("svg")
@@ -333,7 +328,7 @@ HTMLWidgets.widget({
       d3.select(el).select(".sliderButton")
         .on("mouseup", function() {
           var new_k = +this.value;
-          d3.select(el).select(".newk").value = new_k;
+          d3.select(el).select(".newk")[0][0].value = new_k;
           if (isNaN(new_k))
             return false;
           set_k(Math.max(min_k, Math.min(max_k, new_k)));
@@ -344,12 +339,12 @@ HTMLWidgets.widget({
       // function to read in the value of k from the form
       // and draw the corresponding k-node summary tree
       d3.select(el).select(".ksubmit").on("click", function() {
-        var new_k = Math.floor(+d3.select(el).select(".newk").value);
+        var new_k = Math.floor(+d3.select(el).select(".newk")[0][0].value);
         if (isNaN(new_k))
           return false;
         set_k(Math.max(min_k, Math.min(max_k, new_k)));    
         // update slider to reflect new value of k:
-        d3.select(el).select(".sliderButton").value = current_k;
+        d3.select(el).select(".sliderButton")[0][0].value = current_k;
         updateTree();
         return false;
       });
@@ -358,7 +353,7 @@ HTMLWidgets.widget({
       d3.select(el).select(".increase_k").on("click", function() {
         set_k(Math.min(current_k + 1, max_k));
         // update slider to reflect new value of k:
-        d3.select(el).select(".sliderButton").value = current_k;
+        d3.select(el).select(".sliderButton")[0][0].value = current_k;
         updateTree();
       });
     
@@ -366,7 +361,7 @@ HTMLWidgets.widget({
       d3.select(el).select(".decrease_k").on("click", function() {
         set_k(Math.max(current_k - 1, min_k));
         // update slider to reflect new value of k:
-        d3.select(el).select(".sliderButton").value = current_k;
+        d3.select(el).select(".sliderButton")[0][0].value = current_k;
         updateTree();
       });
     
@@ -600,12 +595,12 @@ HTMLWidgets.widget({
       root_text_width = d3.select(el).selectAll("text")[0][12].getBBox().width;
     
       // adjust viewBox to fit the bounds of our new tree
-      d3.select(el).select("svg")
+      d3.select(el).select("svg.svgplot")
         .attr(
           "viewBox",
           '0,-50,' + 
               ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) ) +
-              ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20)
+              ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20 + 50)
         );
     
       // Transition nodes to their new position.
