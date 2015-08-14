@@ -22,7 +22,7 @@
 #' @import htmlwidgets
 #'
 #' @export
-summarytrees_htmlwidget <- function(json.object, width = NULL, height = NULL) {
+summarytrees_htmlwidget <- function(json.object, width = NULL, height = NULL, elementId = NULL) {
 
   # for now just leave like draw.vis and pass the json.object
   #   on to the htmlwidget.
@@ -40,7 +40,8 @@ summarytrees_htmlwidget <- function(json.object, width = NULL, height = NULL) {
     x,
     width = width,
     height = height,
-    package = 'summarytrees'
+    package = 'summarytrees',
+    elementId = elementId
   )
 }
 
