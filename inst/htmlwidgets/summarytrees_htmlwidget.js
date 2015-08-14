@@ -193,7 +193,7 @@ HTMLWidgets.widget({
     var vis = d3.select(el).append("svg")
         .style("width", "100%")
         .style("height", svg_height - topdiv[0][0].getBoundingClientRect().height )
-        .attr("viewBox", '0,0,' + svg_width + ',' + svg_height )
+        .attr("viewBox", '0,-50,' + svg_width + ',' + svg_height )
           .append("g");
     
     // the dark gray rectangle defining the data plotting area:
@@ -603,7 +603,7 @@ HTMLWidgets.widget({
       d3.select(el).select("svg")
         .attr(
           "viewBox",
-          '0,0,' + 
+          '0,-50,' + 
               ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) ) +
               ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20)
         );
