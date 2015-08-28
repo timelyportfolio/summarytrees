@@ -1,9 +1,17 @@
 ---
 title: "DMOZ"
-author: "Kenny Shirley"
-date: "August 9, 2015"
-output: html_document
+author: "Kenneth E. Shirley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DMOZ}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(collapse = FALSE, comment = "#>", cache = TRUE)
+```
 
 Here we'll describe how to compute maximum entropy summary trees to visualize the topic hierarcy of the URLs in DMOZ (aka the Open Directory Project).
 
@@ -11,9 +19,7 @@ First, we downloaded the DMOZ "content" data in April of 2015 from [http://www.d
 
 Next, we use the command line to extract just the assigned topic of each of the approximately 3.77 million URLs and write them, one per line, to a file called "dmoz-topics.txt".
 
-<pre>
-grep "<topic>" content.rdf.u8 | sed 's/<topic>//g' | sed 's/<\/topic>//g' | sed 's/^    //g' > dmoz-topics.txt
-</pre>
+    grep "<topic>" content.rdf.u8 | sed 's/<topic>//g' | sed 's/<\/topic>//g' | sed 's/^    //g' > dmoz-topics.txt
 
 Next, we read this list of topics into R and compute their frequencies:
 ``` {r, dmoz-read}
@@ -73,7 +79,7 @@ t2 - t1
 ```
 
 
-Now we compute the labels, we assemble the nodes, parents, weights, and labels in a data.frame, and we clean up one pseudo-node that was computed as the parent of the root.
+Now we compute the labels, we assemble the nodes, parents, weights, and labels in a data frame, and we clean up one pseudo-node that was computed as the parent of the root.
 
 ``` {r assemble}
 label <- sapply(strsplit(full.node, "/"), function(x) tail(x, 1))
@@ -143,7 +149,7 @@ draw.vis(json.object = json,
          open.browser = interactive())
 ```
 
-To see this set of 100 maximum entropy summary trees, go [here](http://research.att.com/~kshirley/summarytrees/dmoz).
+To see this set of 100 maximum entropy summary trees, go [here](http://www.research.att.com/~kshirley/summarytrees/dmoz).
 
 From the visualization, we can see that:
 
