@@ -594,15 +594,7 @@ HTMLWidgets.widget({
       // text element on the page!
       root_text_width = d3.select(el).selectAll("text")[0][12].getBBox().width;
     
-      // adjust viewBox to fit the bounds of our new tree
-      d3.select(el).select("svg.svgplot").transition().duration(2000)
-        .attr(
-          "viewBox",
-          '0,-50,' + 
-              ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) ) +
-              ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20 + 50)
-        );
-    
+
       // Transition nodes to their new position.
       var nodeUpdate = node.transition()
         .duration(duration)
@@ -756,7 +748,16 @@ HTMLWidgets.widget({
         .attrTween("transform", translateAlong(lineGraph.node(), current_k, old_k));
       
       // set the old_k to the current_k:
-      old_k = current_k;    
+      old_k = current_k;
+      
+      // adjust viewBox to fit the bounds of our new tree
+      d3.select(el).select("svg.svgplot").transition().duration(2000)
+        .attr(
+          "viewBox",
+          '0,-50,' + 
+              ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) ) +
+              ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20 + 50)
+        );      
 
   }
   
