@@ -184,24 +184,50 @@ HTMLWidgets.widget({
     var svg_height = el.getBoundingClientRect().height;
 
     // Set up the plotting region for the legend + tree:
-    var vis = d3.select(el).append("svg")
+    var outerlayer = d3.select(el).append("svg")
         .attr("class", "svgplot")
         .style("width", "100%")
         .style("height", svg_height - topdiv[0][0].getBoundingClientRect().height )
         .attr("viewBox", '0,-50,' + svg_width + ',' + svg_height )
-          .append("g");
+        .append("g");
+        
+    var zoomlayer = outerlayer.append("g")
+        .attr("class","summarytree-zoomlayer");
+          
+    // add zooming
+    // http://gist.github.com/mbostock/2374239
+    
+    function zoomed() {
+      zoomlayer.attr(
+        "transform",
+        "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")"
+      );
+    }
+    
+    var zoom = d3.behavior.zoom()
+      .translate([0, 0])
+      .scale(1)
+      .scaleExtent([1, 8])
+      .on("zoom", zoomed);          
     
     // the dark gray rectangle defining the data plotting area:
-    vis.append("rect")
+    zoomlayer.append("rect")
+      .attr("class","summarytree-zoomrect")
       .attr("x", 0)
-      .attr("y", 0)
+      .attr("y", -50)
       .attr("width", svg_width)
-      .attr("height", svg_height)
+      .attr("height", svg_height + 50)
       .attr("fill", "black")
       .attr("fill-opacity", 0.00)
       .attr("stroke", "black")
-      .attr("stroke-opacity", 0.00);
+      .attr("stroke-opacity", 0.00)
+      .call(zoom);
+      
+
+    // add another g for the plot for smooth zooming/panning
+    vis = zoomlayer.append("g");
     
+    /*
     // the light gray rectangle defining the total plotting area
     // This includes room around the data plotting area for margin labels, etc.
     vis.append("rect")
@@ -211,22 +237,23 @@ HTMLWidgets.widget({
       .attr("height", svg_height + margin.top + margin.bottom)
       .attr("fill", "black")
       .attr("fill-opacity", 0.00);
+    */
     
     // Set up a box to contain the entropy profile plot:
-    var ep = vis.append("rect")
+    var ep = outerlayer.append("rect")
       .attr("x", 0)
       .attr("y", 10)
       .attr("fill", "black")
       .attr("fill-opacity", 0.10)
       .attr("id", "entropy_profile");
     
-    ent_y = vis.append("text")
+    ent_y = outerlayer.append("text")
       .attr("class", "legend_text")
       .attr("text-anchor", "middle")
       .attr("stroke-width", 0.5)
       .text("entropy"); 
     
-    ent_x = vis.append("text")
+    ent_x = outerlayer.append("text")
       .attr("class", "legend_text")
       .attr("text-anchor", "middle")
       .attr("stroke-width", 0.5)
@@ -404,13 +431,13 @@ HTMLWidgets.widget({
         .interpolate("linear");
     
       //The line SVG Path we draw
-      lineGraph = vis.append("path")
+      lineGraph = outerlayer.append("path")
         .attr("d", lineFunction(entropy))
         .attr("class", "ep")
         .attr("transform", function(d) { return "translate(0, 10)";});
     
       // append a circle (with no location yet):
-      epcircle = vis.append("circle")
+      epcircle = outerlayer.append("circle")
         .attr("fill", "black")
         .attr("id", "entropycircle")
         .attr("r", 5);
@@ -422,7 +449,7 @@ HTMLWidgets.widget({
     
     
     function AddLegend() {
-      var legend = vis.append("rect")
+      var legend = outerlayer.append("rect")
         .attr("x", 0)
         .attr("y", -30)
         .attr("height", 10)
@@ -430,7 +457,7 @@ HTMLWidgets.widget({
         .attr("fill", legend_color)
         .attr("stroke", legend_color);
     
-      vis.append("text")
+      outerlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", 0)
         .attr("y", -35)
@@ -440,7 +467,7 @@ HTMLWidgets.widget({
         .style("fill-opacity", 1)
         .text("Node Weight" + (units == "" ? "" : " (" + units + ")"));
     
-      vis.append("text")
+      outerlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", 0)
         .attr("y", -5)
@@ -450,7 +477,7 @@ HTMLWidgets.widget({
         .style("fill-opacity", 1)
         .text("0");
       
-      maxPrint = vis.append("text")
+      maxPrint = outerlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", legend_width)
         .attr("y", -5)
@@ -750,15 +777,21 @@ HTMLWidgets.widget({
       // set the old_k to the current_k:
       old_k = current_k;
       
+      
+      var maxwidth = ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) );
+      var maxheight = ( +d3.max(node.data(),function(d){return d.x}) + 20 + 50 );
+      
       // adjust viewBox to fit the bounds of our new tree
       d3.select(el).select("svg.svgplot").transition().duration(2000)
         .attr(
           "viewBox",
-          '0,-50,' + 
-              ( +d3.max(node.data(),function(d){return d.y}) + d3.max(node.select('text')[0].map(function(d){return d.getBoundingClientRect().width})) ) +
-              ',' + ( +d3.max(node.data(),function(d){return d.x}) + 20 + 50)
-        );      
-
+          '0,-50,' + maxwidth + ',' + maxheight
+        );
+      
+      d3.select(el).select(".summarytree-zoomrect")
+        .attr("width", maxwidth)
+        .attr("height", maxheight)
+        .style("pointer-events","all");
   }
   
   },
