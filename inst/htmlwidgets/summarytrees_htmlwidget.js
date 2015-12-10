@@ -595,7 +595,7 @@ HTMLWidgets.widget({
       root_text_width = d3.select(el).selectAll("text")[0][12].getBBox().width;
     
       // adjust viewBox to fit the bounds of our new tree
-      d3.select(el).select("svg.svgplot")
+      d3.select(el).select("svg.svgplot").transition().duration(2000)
         .attr(
           "viewBox",
           '0,-50,' + 
