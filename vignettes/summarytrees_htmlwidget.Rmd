@@ -15,12 +15,26 @@ vignette: >
 
 ```{r}
 library(summarytrees)
+data(dmoz)
 
-json <- paste0(
-  readLines("http://www2.research.att.com/~kshirley/jsm2015/data.json")
-  ,collapse="\n"
-)
+#use example from vignette
+K <- 100
+g <- greedy(node = dmoz[, "node"],
+           parent = dmoz[, "parent"],
+           weight = dmoz[, "weight"],
+           label = dmoz[, "label"],
+           K = K)
 
-summarytrees_htmlwidget(json, height = 600, width = 800)
-
+# Prepare the summary trees for visualization:
+json <- prepare.vis(tree.list = g$summary.trees,
+                    labels = g$data[, "label"],
+                    tree = g$tree,
+                    legend.width = 150,
+                    node.width = 225,
+                    node.height = 14,
+                    units = "# of URLs",
+                    print.weights = TRUE,
+                    legend.color = "lightsteelblue",
+                    color.level = 3)
+summarytrees_htmlwidget(json)
 ```
