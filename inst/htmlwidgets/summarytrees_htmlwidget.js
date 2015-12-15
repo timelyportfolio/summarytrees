@@ -183,7 +183,17 @@ HTMLWidgets.widget({
     var svg_width = el.getBoundingClientRect().width;
     var svg_height = el.getBoundingClientRect().height;
 
-    // Set up the plotting region for the legend + tree:
+    // Set up plotting region for the legend
+    var legendlayer = d3.select(el).append("div")
+        .style("position","absolute")
+        .style("top", topdiv[0][0].getBoundingClientRect().height + "px")
+        .append("svg")
+        .attr("class", "legendplot")
+        .attr("viewBox", "-30, -10, 280, 200")
+        .attr("height", 300)
+        .attr("width", 300);
+    
+    // Set up the plotting region for the tree:
     var outerlayer = d3.select(el).append("svg")
         .attr("class", "svgplot")
         .style("width", "100%")
@@ -240,20 +250,20 @@ HTMLWidgets.widget({
     */
     
     // Set up a box to contain the entropy profile plot:
-    var ep = outerlayer.append("rect")
+    var ep = legendlayer.append("rect")
       .attr("x", 0)
       .attr("y", 10)
       .attr("fill", "black")
       .attr("fill-opacity", 0.10)
       .attr("id", "entropy_profile");
     
-    ent_y = outerlayer.append("text")
+    ent_y = legendlayer.append("text")
       .attr("class", "legend_text")
       .attr("text-anchor", "middle")
       .attr("stroke-width", 0.5)
       .text("entropy"); 
     
-    ent_x = outerlayer.append("text")
+    ent_x = legendlayer.append("text")
       .attr("class", "legend_text")
       .attr("text-anchor", "middle")
       .attr("stroke-width", 0.5)
@@ -431,13 +441,13 @@ HTMLWidgets.widget({
         .interpolate("linear");
     
       //The line SVG Path we draw
-      lineGraph = outerlayer.append("path")
+      lineGraph = legendlayer.append("path")
         .attr("d", lineFunction(entropy))
         .attr("class", "ep")
         .attr("transform", function(d) { return "translate(0, 10)";});
     
       // append a circle (with no location yet):
-      epcircle = outerlayer.append("circle")
+      epcircle = legendlayer.append("circle")
         .attr("fill", "black")
         .attr("id", "entropycircle")
         .attr("r", 5);
@@ -449,7 +459,7 @@ HTMLWidgets.widget({
     
     
     function AddLegend() {
-      var legend = outerlayer.append("rect")
+      var legend = legendlayer.append("rect")
         .attr("x", 0)
         .attr("y", -30)
         .attr("height", 10)
@@ -457,7 +467,7 @@ HTMLWidgets.widget({
         .attr("fill", legend_color)
         .attr("stroke", legend_color);
     
-      outerlayer.append("text")
+      legendlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", 0)
         .attr("y", -35)
@@ -467,7 +477,7 @@ HTMLWidgets.widget({
         .style("fill-opacity", 1)
         .text("Node Weight" + (units == "" ? "" : " (" + units + ")"));
     
-      outerlayer.append("text")
+      legendlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", 0)
         .attr("y", -5)
@@ -477,7 +487,7 @@ HTMLWidgets.widget({
         .style("fill-opacity", 1)
         .text("0");
       
-      maxPrint = outerlayer.append("text")
+      maxPrint = legendlayer.append("text")
         .attr("class", "legend_text")
         .attr("x", legend_width)
         .attr("y", -5)
@@ -792,6 +802,8 @@ HTMLWidgets.widget({
         .attr("width", maxwidth)
         .attr("height", maxheight)
         .style("pointer-events","all");
+        
+      
   }
   
   },
