@@ -5,6 +5,8 @@
 #'                R contexts, such as RStudio viewer, R console, a web browser, or Shiny.
 #'
 #' @param json.object  character string output from \link{prepare.vis}.
+#' @param width,height a valid \code{CSS} size for the width and height
+#'          of the \code{htmlwidget} container.
 #'
 #' @return An \code{htmlwidget} object.
 #' 

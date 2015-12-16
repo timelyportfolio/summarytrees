@@ -9,6 +9,9 @@ summarytrees_htmlwidget(json.object, width = NULL, height = NULL,
 }
 \arguments{
 \item{json.object}{character string output from \link{prepare.vis}.}
+
+\item{width, height}{a valid \code{CSS} size for the width and height
+of the \code{htmlwidget} container.}
 }
 \value{
 An \code{htmlwidget} object.
